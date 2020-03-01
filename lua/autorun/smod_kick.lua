@@ -478,8 +478,9 @@ function KickHit(ply)
 					util.Effect("BloodImpact",fx)
 				else
 					ply:EmitSound("player/smod_kick/foot_kickwall.wav", 100, math.random(80, 110))
+					local physObj = trace.Entity:GetPhysicsObject()
+					physObj:SetVelocity(trace.Normal * physForce * 7.5)
 					trace.Entity:TakeDamage(damage)
-					trace.Entity:GetPhysicsObject():SetVelocity(trace.Normal * physForce * 7.5)
 					 if GetConVarNumber("kick_effect") >= 1 then		
 						local fx 	= EffectData()
 						fx:SetStart(trace.HitPos)
