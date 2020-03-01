@@ -1,0 +1,10 @@
+{
+	"title"		:	"[TFA]SMOD Kick (always blow door, no effects/decals)",
+	"type"		:	"tool",
+	"tags"		:	[ "roleplay", "realism" ],
+	"ignore"	:
+	[
+		"*.md",
+		"*git*"
+	]
+}
