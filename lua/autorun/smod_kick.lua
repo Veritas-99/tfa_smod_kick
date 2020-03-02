@@ -495,7 +495,7 @@ function KickHit(ply)
 				ply:ViewPunch( Angle( -10, math.random( -5, 5 ), 0 ) );
 				
 				if trace.Entity:GetClass() == "func_door_rotating" or trace.Entity:GetClass() == "prop_door_rotating" then
-					if math.random(1,GetConVarNumber("kick_chancetoblowdoor")) == 1 and GetConVarNumber("kick_blowdoor") >= 1 and trace.Entity:GetClass() == "prop_door_rotating" then
+					if math.random(1,GetConVarNumber("kick_chancetoblowdoor")) == 1 and GetConVarNumber("kick_blowdoor") >= 1 then
 						FakeDoor(trace.Entity, ply, damage)
 						ply:EmitSound("ambient/materials/door_hit1.wav", 100, math.random(80, 120))
 					else	
