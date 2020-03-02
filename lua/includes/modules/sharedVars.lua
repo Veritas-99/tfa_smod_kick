@@ -1,0 +1,1 @@
+local Gkick_teams = {}

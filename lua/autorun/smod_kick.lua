@@ -3,6 +3,8 @@
 Credit to LeErOy NeWmAn and WHORSHIPPER for the original code that this is based on.
 
 ----------------------------------------------------*/
+require("sharedvars")
+
 if SERVER then
 	include("kick_animapi/boneanimlib.lua")
 end
@@ -650,6 +652,12 @@ if (SERVER) then
 	util.AddNetworkString( "Kicking" )
 	
 	function KickingComm(ply)
+		local plyTeam = "" .. ply:Team()
+		if Gkick_teams != nil then
+			if not table.HasValue(Gkick_teams, plyTeam)	then
+				return
+			end
+		end
 
 		if !ply:Alive() then return false end
 		if ply.StopKick and ply.StopKick < CurTime() then
