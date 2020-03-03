@@ -495,9 +495,29 @@ function KickHit(ply)
 				ply:ViewPunch( Angle( -10, math.random( -5, 5 ), 0 ) );
 				
 				if trace.Entity:GetClass() == "func_door_rotating" or trace.Entity:GetClass() == "prop_door_rotating" then
-					if math.random(1,GetConVarNumber("kick_chancetoblowdoor")) == 1 and GetConVarNumber("kick_blowdoor") >= 1 then
-						FakeDoor(trace.Entity, ply, damage)
-						ply:EmitSound("ambient/materials/door_hit1.wav", 100, math.random(80, 120))
+					if GetConVarNumber("kick_blowdoor") >= 1 then
+						local breakDoor = false
+						if engine.ActiveGamemode() == "darkrp" then
+							if trace.Entity:isKeysOwned() then
+								local doorOwner = trace.Entity:getDoorOwner()
+								print(doorOwner == 1)
+								if doorOwner == ply then breakDoor = true end
+								for _, v in ipairs(player.GetAll()) do
+									if v.warranted or v:isWanted() or v:isArrested() and trace.Entity:isKeysOwnedBy(v) then
+										breakDoor = true
+										break
+									end
+								end
+							else
+								breakDoor = true
+							end
+						else
+							breakDoor = true
+						end
+						if breakDoor then
+							FakeDoor(trace.Entity, ply, damage)
+							ply:EmitSound("ambient/materials/door_hit1.wav", 100, math.random(80, 120))
+						end
 					else	
 						ply:EmitSound("ambient/materials/door_hit1.wav", 100, math.random(80, 120))
 						
@@ -634,9 +654,11 @@ function FakeDoor(Door, attacker, amount)
 		end
 
 		local ent = ents.Create("prop_physics")
-		ent:SetPos(pos)
+		local aav = attacker:GetAimVector()
+		ent:SetPos(pos + (Vector(aav.x,aav.y,0)*15))
 		ent:SetAngles(ang)
 		ent:SetModel(model)
+		ent:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR)
 		if skin then
 			ent:SetSkin(skin)
 		end
@@ -645,7 +667,7 @@ function FakeDoor(Door, attacker, amount)
 		ent:SetVelocity(attacker:GetAimVector() * (amount * GetConVarNumber("kick_blowdoorforce")) * GetConVarNumber("kick_blowdoormulforce"))
 		ent:GetPhysicsObject():ApplyForceCenter(attacker:GetAimVector() * (amount * GetConVarNumber("kick_blowdoorforce")) * GetConVarNumber("kick_blowdoormulforce"))
 		
-		
+		timer.Simple(GetConVar("kick_doorrespawntime"):GetInt(), function()ResetDoor(Door, ent)end)
 end
 
 if (SERVER) then 
